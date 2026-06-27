@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Eklakh — Lead Product Designer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0C0C0F;
+      --surface: #14141A;
+      --border: #222230;
+      --accent: #7B61FF;
+      --accent-soft: rgba(123,97,255,0.12);
+      --text: #EEEEF2;
+      --muted: #7A7A90;
+      --white: #FFFFFF;
+      --nav-bg: rgba(12,12,15,0.85);
+    }
+
+    html.light {
+      --bg: #F5F5F7;
+      --surface: #FFFFFF;
+      --border: #E0E0EA;
+      --accent: #6B4EFF;
+      --accent-soft: rgba(107,78,255,0.10);
+      --text: #1A1A2E;
+      --muted: #6B6B80;
+      --white: #1A1A2E;
+      --nav-bg: rgba(245,245,247,0.88);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 20px 60px;
+      background: var(--nav-bg);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800; font-size: 1.2rem;
+      color: var(--white); letter-spacing: -0.02em;
+    }
+    .nav-logo span { color: var(--accent); }
+    .nav-links { display: flex; gap: 36px; list-style: none; }
+    .nav-links a {
+      color: var(--muted); text-decoration: none;
+      font-size: 0.85rem; letter-spacing: 0.04em; text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--white); }
+
+    .nav-right { display: flex; align-items: center; gap: 28px; }
+
+    /* THEME TOGGLE */
+    .theme-toggle {
+      width: 48px; height: 26px;
+      background: var(--border); border-radius: 100px;
+      border: none; cursor: pointer; position: relative;
+      transition: background 0.3s;
+      flex-shrink: 0;
+    }
+    .theme-toggle::after {
+      content: '';
+      position: absolute; top: 3px; left: 3px;
+      width: 20px; height: 20px; border-radius: 50%;
+      background: var(--accent);
+      transition: transform 0.3s, background 0.3s;
+    }
+    html.light .theme-toggle::after { transform: translateX(22px); }
+    .theme-toggle-icon {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      font-size: 11px; pointer-events: none;
+    }
+    .theme-toggle-icon.moon { left: 5px; }
+    .theme-toggle-icon.sun  { right: 4px; }
+    html.light .theme-toggle { background: #D0CCFF; }
+    #hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 140px 60px 80px;
+      position: relative; overflow: hidden;
+    }
+    .hero-glow {
+      position: absolute; top: -200px; left: -100px;
+      width: 700px; height: 700px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(123,97,255,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--accent-soft); border: 1px solid rgba(123,97,255,0.3);
+      color: var(--accent); font-size: 0.75rem; letter-spacing: 0.1em;
+      text-transform: uppercase; padding: 6px 14px; border-radius: 100px;
+      margin-bottom: 32px; width: fit-content;
+    }
+    .hero-tag::before {
+      content: ''; width: 6px; height: 6px; background: var(--accent);
+      border-radius: 50%; animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(3rem, 8vw, 7rem);
+      font-weight: 800; line-height: 1.0;
+      letter-spacing: -0.04em; color: var(--white);
+      margin-bottom: 28px;
+    }
+    h1 .line2 { color: var(--muted); }
+    .hero-desc {
+      max-width: 560px; font-size: 1.05rem; color: var(--muted);
+      line-height: 1.8; margin-bottom: 48px;
+    }
+    .hero-cta { display: flex; gap: 16px; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--accent); color: var(--white);
+      padding: 14px 32px; border-radius: 6px;
+      text-decoration: none; font-size: 0.9rem; font-weight: 500;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .btn-primary:hover { opacity: 0.85; transform: translateY(-2px); }
+    .btn-ghost {
+      border: 1px solid var(--border); color: var(--text);
+      padding: 14px 32px; border-radius: 6px;
+      text-decoration: none; font-size: 0.9rem; font-weight: 500;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .btn-ghost:hover { border-color: var(--accent); transform: translateY(-2px); }
+
+    .hero-scroll {
+      margin-top: 80px; display: flex; align-items: center; gap: 12px;
+      color: var(--muted); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    .scroll-line {
+      width: 40px; height: 1px; background: var(--muted);
+      animation: scrollAnim 2s ease-in-out infinite;
+    }
+    @keyframes scrollAnim { 0%,100% { width: 20px; } 50% { width: 50px; } }
+
+    /* SECTIONS */
+    section { padding: 100px 60px; }
+    .section-label {
+      font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 16px; font-weight: 500;
+    }
+    h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 700; letter-spacing: -0.03em;
+      color: var(--white); margin-bottom: 24px;
+    }
+    .divider { width: 100%; height: 1px; background: var(--border); }
+
+    /* ABOUT */
+    #about { background: var(--surface); }
+    .about-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
+      align-items: start; margin-top: 48px;
+    }
+    .about-text p { color: var(--muted); font-size: 1rem; margin-bottom: 20px; }
+    .about-text p strong { color: var(--text); font-weight: 500; }
+    .about-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .stat-card {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 10px; padding: 28px 24px;
+      transition: border-color 0.2s;
+    }
+    .stat-card:hover { border-color: var(--accent); }
+    .stat-number {
+      font-family: 'Syne', sans-serif;
+      font-size: 2.4rem; font-weight: 800;
+      color: var(--white); letter-spacing: -0.04em;
+    }
+    .stat-number span { color: var(--accent); }
+    .stat-label { color: var(--muted); font-size: 0.85rem; margin-top: 4px; }
+
+    /* COMPANIES */
+    #companies { background: var(--bg); }
+    .companies-intro { color: var(--muted); max-width: 500px; margin-bottom: 56px; }
+    .company-list { display: flex; flex-direction: column; }
+    .company-row {
+      display: grid; grid-template-columns: 56px 1fr auto;
+      align-items: start; gap: 28px;
+      padding: 32px 0; border-bottom: 1px solid var(--border);
+      transition: background 0.2s;
+    }
+    .company-row:first-child { border-top: 1px solid var(--border); }
+    .company-row:hover { background: rgba(123,97,255,0.04); margin: 0 -20px; padding-left: 20px; padding-right: 20px; }
+    .company-index {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.75rem; color: var(--accent); font-weight: 600; padding-top: 4px;
+    }
+    .company-info h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.15rem; font-weight: 700; color: var(--white);
+      letter-spacing: -0.02em; margin-bottom: 2px;
+    }
+    .company-role { color: var(--muted); font-size: 0.85rem; margin-bottom: 14px; }
+    .company-bullets { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .company-bullets li {
+      color: var(--muted); font-size: 0.875rem; line-height: 1.6;
+      padding-left: 16px; position: relative;
+    }
+    .company-bullets li::before {
+      content: '→'; position: absolute; left: 0;
+      color: var(--accent); font-size: 0.75rem;
+    }
+    .company-bullets li strong { color: var(--text); font-weight: 500; }
+    .company-period {
+      font-size: 0.78rem; color: var(--muted);
+      background: var(--surface); border: 1px solid var(--border);
+      padding: 5px 12px; border-radius: 100px; white-space: nowrap; margin-top: 4px;
+    }
+
+    /* PROJECTS */
+    #projects { background: var(--surface); }
+    .projects-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px; margin-top: 48px;
+    }
+    .project-card {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 12px; overflow: hidden;
+      transition: transform 0.3s, border-color 0.3s;
+    }
+    .project-card:hover { transform: translateY(-6px); border-color: var(--accent); }
+    .project-thumb {
+      height: 200px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3rem; position: relative; overflow: hidden;
+    }
+    .project-thumb-1 { background: linear-gradient(135deg, #0d1a35, #1a4a7a); }
+    .project-thumb-2 { background: linear-gradient(135deg, #1a1035, #3d2580); }
+    .project-thumb-3 { background: linear-gradient(135deg, #0d2a1a, #1a6640); }
+    .project-thumb-4 { background: linear-gradient(135deg, #2a1a0d, #80401a); }
+    .project-tag-overlay {
+      position: absolute; top: 14px; right: 14px;
+      background: rgba(0,0,0,0.5); color: var(--accent);
+      font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 4px 10px; border-radius: 100px;
+      border: 1px solid rgba(123,97,255,0.4);
+    }
+    .project-body { padding: 28px; }
+    .project-body h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.15rem; font-weight: 700; color: var(--white);
+      letter-spacing: -0.02em; margin-bottom: 6px;
+    }
+    .project-company { font-size: 0.78rem; color: var(--accent); margin-bottom: 10px; }
+    .project-body p { color: var(--muted); font-size: 0.88rem; line-height: 1.7; margin-bottom: 20px; }
+    .project-metric {
+      background: var(--accent-soft); border: 1px solid rgba(123,97,255,0.25);
+      border-radius: 6px; padding: 10px 14px; margin-bottom: 16px;
+      font-size: 0.82rem; color: var(--text);
+    }
+    .project-metric strong { color: var(--accent); }
+    .project-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tag {
+      font-size: 0.72rem; color: var(--muted);
+      background: var(--surface); border: 1px solid var(--border);
+      padding: 4px 10px; border-radius: 4px;
+    }
+
+    /* SKILLS */
+    #skills { background: var(--bg); }
+    .skills-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px; margin-top: 48px;
+    }
+    .skill-group {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 32px;
+      transition: border-color 0.2s;
+    }
+    .skill-group:hover { border-color: var(--accent); }
+    .skill-group-icon { font-size: 1.8rem; margin-bottom: 16px; }
+    .skill-group h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem; font-weight: 700; color: var(--white);
+      margin-bottom: 18px; letter-spacing: -0.01em;
+    }
+    .skill-items { display: flex; flex-direction: column; gap: 14px; }
+    .skill-item { display: flex; flex-direction: column; gap: 6px; }
+    .skill-name { font-size: 0.85rem; color: var(--text); }
+    .skill-bar { height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
+    .skill-fill {
+      height: 100%; background: var(--accent); border-radius: 2px;
+      width: 0%; transition: width 1s ease;
+    }
+
+    /* CONTACT */
+    #contact { background: var(--surface); text-align: center; }
+    .contact-inner { max-width: 600px; margin: 0 auto; }
+    .contact-inner h2 { margin-bottom: 16px; }
+    .contact-inner p { color: var(--muted); margin-bottom: 48px; font-size: 1rem; }
+    .contact-links {
+      display: flex; justify-content: center; flex-wrap: wrap; gap: 16px;
+      margin-bottom: 36px;
+    }
+    .contact-link {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--bg); border: 1px solid var(--border);
+      color: var(--text); text-decoration: none;
+      padding: 14px 24px; border-radius: 8px; font-size: 0.9rem;
+      transition: border-color 0.2s, color 0.2s, transform 0.2s;
+    }
+    .contact-link:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+    .contact-email-box {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 10px; padding: 24px 32px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 20px; flex-wrap: wrap;
+    }
+    .contact-email-box span { color: var(--muted); font-size: 0.9rem; }
+    .email-address { color: var(--white); font-size: 1rem; }
+
+    /* FOOTER */
+    footer {
+      background: var(--bg); padding: 32px 60px;
+      border-top: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    footer p { color: var(--muted); font-size: 0.82rem; }
+    .footer-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800; font-size: 1rem; color: var(--white);
+    }
+    .footer-logo span { color: var(--accent); }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      nav { padding: 16px 24px; }
+      .nav-links { display: none; }
+      #hero, section { padding-left: 24px; padding-right: 24px; }
+      #hero { padding-top: 100px; }
+      .about-grid { grid-template-columns: 1fr; gap: 40px; }
+      .company-row { grid-template-columns: 40px 1fr; }
+      .company-period { display: none; }
+      footer { flex-direction: column; gap: 12px; text-align: center; }
+      .contact-email-box { flex-direction: column; text-align: center; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">Eklakh<span>.</span></div>
+    <div class="nav-right">
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#companies">Experience</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <span class="theme-toggle-icon moon">🌙</span>
+        <span class="theme-toggle-icon sun">☀️</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-tag">Open to opportunities</div>
+    <h1>
+      Lead Product<br/>
+      <span class="line2">Designer with</span><br/>
+      11 years exp.
+    </h1>
+    <p class="hero-desc">
+      Hi, I'm <strong style="color:var(--white)">Eklakh</strong> — I solve people's daily life problems in the digital world. I lead design teams and stay hands-on, working across B2B and B2C products to deliver user-centric, scalable solutions.
+    </p>
+    <div class="hero-cta">
+      <a href="#projects" class="btn-primary">View My Work</a>
+      <a href="#contact" class="btn-ghost">Get in Touch</a>
+    </div>
+    <div class="hero-scroll">
+      <div class="scroll-line"></div>
+      Scroll to explore
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="section-label">Who I am</div>
+    <h2>Customer-focused.<br/>Hands-on. Impact-driven.</h2>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>I'm a <strong>Lead Product Designer</strong> with 11 years of experience across both B2B and B2C products. I currently lead a small design team while also staying hands-on as an individual contributor.</p>
+        <p>I'm very <strong>customer-focused</strong> and enjoy working on complex problem spaces, partnering closely with product managers, engineers, and researchers to deliver user-centric, scalable solutions.</p>
+        <p>My design process spans the full spectrum — from empathy and user research to wireframing, prototyping, micro-interactions, and developer handoff. I've led teams, hired designers, and introduced processes that raise the quality bar across entire organisations.</p>
+        <p><strong>Education:</strong> Bachelor of Art & Design, MSU University (2012) · Project Management, Alliance University (2015)</p>
+      </div>
+      <div class="about-stats">
+        <div class="stat-card">
+          <div class="stat-number">11<span>+</span></div>
+          <div class="stat-label">Years of Experience</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">4</div>
+          <div class="stat-label">Companies Worked</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">5<span>+</span></div>
+          <div class="stat-label">Designers Led</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">B2B<span>&</span>B2C</div>
+          <div class="stat-label">Product Experience</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- COMPANIES -->
+  <section id="companies">
+    <div class="section-label">Experience</div>
+    <h2>Companies I've<br/>worked with.</h2>
+    <p class="companies-intro">From India's largest e-commerce platform to global healthcare SaaS — I've shaped products used by millions.</p>
+    <div class="company-list">
+
+      <div class="company-row">
+        <div class="company-index">01</div>
+        <div class="company-info">
+          <h3>Omnicell</h3>
+          <div class="company-role">Lead Product Designer · Bangalore</div>
+          <ul class="company-bullets">
+            <li>Led a team of <strong>5 designers</strong>, mentoring craft, process, and career growth.</li>
+            <li>Introduced design process from requirement gathering to developer handoff, collaborating with PMs, Engineers, and Business teams.</li>
+            <li>Conducted <strong>user research and usability testing in the USA</strong> with clinical staff and end-users.</li>
+            <li>Explored AI in design workflows to automate repetitive tasks and let designers focus on problem-solving.</li>
+          </ul>
+        </div>
+        <div class="company-period">Apr 2024 — Present</div>
+      </div>
+
+      <div class="company-row">
+        <div class="company-index">02</div>
+        <div class="company-info">
+          <h3>Gameskraft</h3>
+          <div class="company-role">Lead Product Designer · Bangalore</div>
+          <ul class="company-bullets">
+            <li>Led the Pocket52 app revamp — boosted install-to-registration from <strong>35% → 83%</strong> and desktop user base by <strong>120%</strong>.</li>
+            <li>Implemented a Reward feature resulting in a <strong>10% increase in ARPU</strong> and new user acquisition.</li>
+            <li>Redesigned withdrawal flow — <strong>15% decrease in instant withdrawals</strong>, 35% adopted Superboost pack.</li>
+            <li>Mentored a team of 5 designers for mobile and desktop platforms.</li>
+          </ul>
+        </div>
+        <div class="company-period">Aug 2022 — Jan 2024</div>
+      </div>
+
+      <div class="company-row">
+        <div class="company-index">03</div>
+        <div class="company-info">
+          <h3>RD&X Network</h3>
+          <div class="company-role">Lead & Senior Product Designer · Bangalore</div>
+          <ul class="company-bullets">
+            <li>Designed a Demand-Side Platform (DSP) for buying digital ad inventory across exchanges in real time.</li>
+            <li>Created a SaaS landing page driving <strong>20% increase in product exploration traffic</strong> and daily leads from 50 → 90.</li>
+            <li>Built a subscription dashboard for clients to manage plans, upgrades, team sharing, and wallet features.</li>
+            <li>Developed RD&X's Design Language System (DLS) and marketing templates.</li>
+          </ul>
+        </div>
+        <div class="company-period">Apr 2021 — Sep 2022</div>
+      </div>
+
+      <div class="company-row">
+        <div class="company-index">04</div>
+        <div class="company-info">
+          <h3>Flipkart</h3>
+          <div class="company-role">Designer I & II · Bangalore</div>
+          <ul class="company-bullets">
+            <li>Led design for the <strong>Grocery launch</strong> — overseeing all user journeys from home page IA to order placement.</li>
+            <li>Introduced Grocery Home Page V2 — <strong>+50 unique users/month</strong> and city-wise daily orders grew from 500 → 800.</li>
+            <li>Designed Supermart Saving Pass — <strong>10% increase in unique users</strong> with 80% repeat re-ordering behaviour.</li>
+            <li>Improved cash-on-delivery UX to reduce fraudulent orders and cancellations.</li>
+          </ul>
+        </div>
+        <div class="company-period">Feb 2014 — Mar 2021</div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="section-label">Selected Work</div>
+    <h2>Projects I'm<br/>proud of.</h2>
+    <div class="projects-grid">
+
+      <div class="project-card">
+        <div class="project-thumb project-thumb-1">
+          🏥
+          <div class="project-tag-overlay">Healthcare SaaS</div>
+        </div>
+        <div class="project-body">
+          <h3>Omnicell — Clinical UX</h3>
+          <div class="project-company">Omnicell · 2024–Present</div>
+          <p>Led design for a healthcare automation platform used by clinical staff in the USA. Conducted on-site usability testing to incorporate first-hand insights into product decisions.</p>
+          <div class="project-metric">AI workflows integrated to free designers for higher-order problem-solving</div>
+          <div class="project-tags">
+            <span class="tag">Healthcare B2B</span><span class="tag">UX Research</span><span class="tag">Design Systems</span><span class="tag">Team Leadership</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-thumb project-thumb-2">
+          ♠️
+          <div class="project-tag-overlay">Mobile App</div>
+        </div>
+        <div class="project-body">
+          <h3>Pocket52 — App Revamp</h3>
+          <div class="project-company">Gameskraft · 2022–2024</div>
+          <p>End-to-end redesign of the Pocket52 poker app. Rebuilt onboarding, gameplay UI, rewards, and withdrawal flows to dramatically improve conversion and engagement.</p>
+          <div class="project-metric">Install-to-registration <strong>35% → 83%</strong> · Desktop users up <strong>120%</strong> · ARPU up <strong>10%</strong></div>
+          <div class="project-tags">
+            <span class="tag">Mobile & Desktop</span><span class="tag">Conversion UX</span><span class="tag">Gamification</span><span class="tag">Figma</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-thumb project-thumb-3">
+          🛒
+          <div class="project-tag-overlay">E-Commerce</div>
+        </div>
+        <div class="project-body">
+          <h3>Flipkart Grocery Launch</h3>
+          <div class="project-company">Flipkart · 2014–2021</div>
+          <p>Led design for Flipkart's Grocery vertical from scratch — home page IA, product discovery, basket experience, and order placement. Launched Supermart Saving Pass to drive repeat purchases.</p>
+          <div class="project-metric">Daily orders <strong>500 → 800</strong> · Supermart repeat users at <strong>80%</strong></div>
+          <div class="project-tags">
+            <span class="tag">E-Commerce</span><span class="tag">0→1</span><span class="tag">IA & Navigation</span><span class="tag">Loyalty Programs</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-thumb project-thumb-4">
+          📊
+          <div class="project-tag-overlay">SaaS Platform</div>
+        </div>
+        <div class="project-body">
+          <h3>RD&X — DSP & Subscription</h3>
+          <div class="project-company">RD&X Network · 2021–2022</div>
+          <p>Designed a real-time demand-side advertising platform and a subscription management dashboard. Also created the company's full Design Language System and marketing templates.</p>
+          <div class="project-metric">Product traffic <strong>+20%</strong> · Daily leads <strong>50 → 90</strong> · 2 new clients in 3 months</div>
+          <div class="project-tags">
+            <span class="tag">AdTech</span><span class="tag">SaaS</span><span class="tag">Design System</span><span class="tag">Branding</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="section-label">What I do</div>
+    <h2>Skills &amp;<br/>Tools.</h2>
+    <div class="skills-grid">
+      <div class="skill-group">
+        <div class="skill-group-icon">🎨</div>
+        <h3>Design</h3>
+        <div class="skill-items">
+          <div class="skill-item">
+            <span class="skill-name">UI / Visual Design</span>
+            <div class="skill-bar"><div class="skill-fill" data-width="97"></div></div>
+          </div>
+          <div class="skill-item">
+            <span class="skill-name">UX Research</span>
+            <div class="skill-bar"><div class="skill-fill" data-width="92"></div></div>
+          </div>
+          <div class="skill-item">
+            <span class="skill-name">Interaction & Micro-interactions</span>
+            <div class="skill-bar"><div class="skill-fill" data-width="90"></div></div>
+          </div>
+          <div class="skill-item">
+            <span class="skill-name">Design Systems / DLS</span>
+            <div class="skill-bar"><div class="skill-fill" data-width="92"></div></div>
+          </div>
+          <div class="skill-item">
+            <span class="skill-name">Usability Testing</span>
+            <div class="skill-bar"><div class="skill-fill" data-width="90"></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-icon">🛠️</div>
+        <h3>Tools</h3>
+        <div class="skill-items">
+          <div class="skill-item">
+            <span class="skill-name">Figma</span>
+            <div class="skill-bar"><div class="skill-fill" data-width="98"></div></div>
+          </div>
+          <div class="skill-item">
+            <span class="skill-name">Adobe XD</span>
+            <div class="skill-bar"><div class="skill-fill" data-width="88"></div></div>
+          </div>
+          <div class="skill-item">
+            <span class="skill-name">Photoshop</span>
+            <div class="skill-bar"><div class="skill-fill" data-width="82"></div></div>
+          </div>
+          <div class="skill-item">
+            <span class="skill-name">HTML / CSS</span>
+            <div class="skill-bar"><div class="skill-fill" data-width="72"></div></div>
+          </div>
+          <div class="skill-item">
+            <span class="skill-name">JavaScript</span>
+            <div class="skill-bar"><div class="skill-fill" data-width="60"></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-icon">💡</div>
+        <h3>Process</h3>
+        <div class="skill-items">
+          <div class="skill-item">
+            <span class="skill-name">Empathise & Define</span>
+            <div class="skill-bar"><div class="skill-fill" data-width="95"></div></div>
+          </div>
+          <div class="skill-item">
+            <span class="skill-name">Ideation & Wireframing</span>
+            <div class="skill-bar"><div class="skill-fill" data-width="97"></div></div>
+          </div>
+          <div class="skill-item">
+            <span class="skill-name">Prototyping</span>
+            <div class="skill-bar"><div class="skill-fill" data-width="93"></div></div>
+          </div>
+          <div class="skill-item">
+            <span class="skill-name">Competitive Analysis</span>
+            <div class="skill-bar"><div class="skill-fill" data-width="88"></div></div>
+          </div>
+          <div class="skill-item">
+            <span class="skill-name">Developer Handoff</span>
+            <div class="skill-bar"><div class="skill-fill" data-width="92"></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-icon">👥</div>
+        <h3>Leadership</h3>
+        <div class="skill-items">
+          <div class="skill-item">
+            <span class="skill-name">Team Management</span>
+            <div class="skill-bar"><div class="skill-fill" data-width="93"></div></div>
+          </div>
+          <div class="skill-item">
+            <span class="skill-name">Hiring & Mentoring</span>
+            <div class="skill-bar"><div class="skill-fill" data-width="90"></div></div>
+          </div>
+          <div class="skill-item">
+            <span class="skill-name">Cross-functional Collaboration</span>
+            <div class="skill-bar"><div class="skill-fill" data-width="95"></div></div>
+          </div>
+          <div class="skill-item">
+            <span class="skill-name">Design Critique & Reviews</span>
+            <div class="skill-bar"><div class="skill-fill" data-width="92"></div></div>
+          </div>
+          <div class="skill-item">
+            <span class="skill-name">Stakeholder Management</span>
+            <div class="skill-bar"><div class="skill-fill" data-width="88"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="contact-inner">
+      <div class="section-label">Let's talk</div>
+      <h2>Have a project<br/>in mind?</h2>
+      <p>I'm always open to discussing product design work, team leadership roles, or collaborations. Let's create something great together.</p>
+      <div class="contact-links">
+        <a href="https://www.linkedin.com/feed/" class="contact-link" target="_blank">
+          <span>💼</span> LinkedIn
+        </a>
+        <a href="tel:+918904280388" class="contact-link">
+          <span>📞</span> +91 89042 80388
+        </a>
+      </div>
+      <div class="contact-email-box">
+        <span>Reach me at</span>
+        <span class="email-address">eklakhuxuid@gmail.com</span>
+        <a href="mailto:eklakhuxuid@gmail.com" class="btn-primary">Send Email</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">Eklakh<span>.</span></div>
+    <p>Designed &amp; Built by Eklakh · 2025</p>
+    <p>Lead Product Designer · Bangalore</p>
+  </footer>
+
+  <script>
+    // Theme toggle
+    const toggle = document.getElementById('themeToggle');
+    const html = document.documentElement;
+
+    // Load saved preference
+    if (localStorage.getItem('theme') === 'light') html.classList.add('light');
+
+    toggle.addEventListener('click', () => {
+      html.classList.toggle('light');
+      localStorage.setItem('theme', html.classList.contains('light') ? 'light' : 'dark');
+    });
+
+    // Animate skill bars on scroll
+    const fills = document.querySelectorAll('.skill-fill');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          el.style.width = el.dataset.width + '%';
+        }
+      });
+    }, { threshold: 0.2 });
+    fills.forEach(f => observer.observe(f));
+
+    // Nav active highlight
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-links a');
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(s => {
+        if (window.scrollY >= s.offsetTop - 100) current = s.id;
+      });
+      navLinks.forEach(a => {
+        a.style.color = a.getAttribute('href') === '#' + current ? 'var(--white)' : '';
+      });
+    });
+  </script>
+</body>
+</html>
