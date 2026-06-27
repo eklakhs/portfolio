@@ -44,7 +44,69 @@
       transition: background 0.3s, color 0.3s;
     }
 
-    /* NAV */
+    /* PASSWORD GATE */
+    #password-gate {
+      position: fixed; inset: 0; z-index: 9999;
+      background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column;
+      transition: opacity 0.5s ease;
+    }
+    #password-gate.hidden {
+      opacity: 0; pointer-events: none;
+    }
+    .gate-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 48px 40px;
+      width: 100%; max-width: 400px;
+      text-align: center;
+    }
+    .gate-logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.6rem; font-weight: 800;
+      color: var(--white); margin-bottom: 8px;
+    }
+    .gate-logo span { color: var(--accent); }
+    .gate-subtitle {
+      color: var(--muted); font-size: 0.88rem; margin-bottom: 36px;
+    }
+    .gate-label {
+      display: block; text-align: left;
+      font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 10px;
+    }
+    .gate-input {
+      width: 100%; padding: 14px 16px;
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 8px; color: var(--text);
+      font-family: 'Inter', sans-serif; font-size: 0.95rem;
+      outline: none; margin-bottom: 12px;
+      transition: border-color 0.2s;
+    }
+    .gate-input:focus { border-color: var(--accent); }
+    .gate-input.error { border-color: #FF5B61; animation: shake 0.3s ease; }
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      25% { transform: translateX(-8px); }
+      75% { transform: translateX(8px); }
+    }
+    .gate-error {
+      color: #FF5B61; font-size: 0.8rem;
+      margin-bottom: 12px; min-height: 18px;
+    }
+    .gate-btn {
+      width: 100%; padding: 14px;
+      background: var(--accent); color: #fff;
+      border: none; border-radius: 8px;
+      font-family: 'Inter', sans-serif; font-size: 0.95rem; font-weight: 500;
+      cursor: pointer; transition: opacity 0.2s, transform 0.2s;
+    }
+    .gate-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+    .gate-hint {
+      margin-top: 20px; color: var(--muted); font-size: 0.78rem;
+    }
     nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
       display: flex; justify-content: space-between; align-items: center;
@@ -364,6 +426,19 @@
   </style>
 </head>
 <body>
+
+  <!-- PASSWORD GATE -->
+  <div id="password-gate">
+    <div class="gate-box">
+      <div class="gate-logo">Eklakh<span>.</span></div>
+      <div class="gate-subtitle">This portfolio is password protected.</div>
+      <label class="gate-label" for="gate-input">Enter Password</label>
+      <input class="gate-input" type="password" id="gate-input" placeholder="••••••••" autocomplete="off" />
+      <div class="gate-error" id="gate-error"></div>
+      <button class="gate-btn" id="gate-btn">Enter Portfolio</button>
+      <p class="gate-hint">Contact Eklakh for access · eklakhuxuid@gmail.com</p>
+    </div>
+  </div>
 
   <!-- NAV -->
   <nav>
@@ -732,6 +807,35 @@
   </footer>
 
   <script>
+    // ── PASSWORD GATE ──
+    const PASSWORD = 'eklakh2025'; // 👈 Change this to your own password
+    const gate = document.getElementById('password-gate');
+    const gateInput = document.getElementById('gate-input');
+    const gateBtn = document.getElementById('gate-btn');
+    const gateError = document.getElementById('gate-error');
+
+    function unlock() {
+      const val = gateInput.value.trim();
+      if (val === PASSWORD) {
+        sessionStorage.setItem('unlocked', 'true');
+        gate.classList.add('hidden');
+        setTimeout(() => gate.style.display = 'none', 500);
+      } else {
+        gateError.textContent = 'Incorrect password. Try again.';
+        gateInput.classList.add('error');
+        gateInput.value = '';
+        setTimeout(() => gateInput.classList.remove('error'), 400);
+      }
+    }
+
+    // Check if already unlocked this session
+    if (sessionStorage.getItem('unlocked') === 'true') {
+      gate.style.display = 'none';
+    }
+
+    gateBtn.addEventListener('click', unlock);
+    gateInput.addEventListener('keydown', e => { if (e.key === 'Enter') unlock(); });
+
     // Theme toggle
     const toggle = document.getElementById('themeToggle');
     const html = document.documentElement;
